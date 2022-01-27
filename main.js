@@ -1,25 +1,32 @@
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true);
 
-var createScene = async function () {
-   
+const createScene = function() {
+
     const scene = new BABYLON.Scene(engine);
 
-    var environment = scene.createDefaultEnvironment();
+   // var environment = scene.createDefaultEnvironment();
 
-    const xr = scene.createDefaultVRExperience({
+    const xrPromise = scene.createDefaultXRExperienceAsync({
         uiOptions: {
-            sessionMode: 'immersive-ar',
-            referenceSpaceType: 'local-floor'
-        },
-        optionalFeatures: true
+            sessionMode: 'immersive-ar'
+        }
     });
-    
-    return scene;
+
+    return xrPromise.then((xrExperience) => {
+        return scene;
+    });
 }
 
-var scene = createScene();
+createScene().then(sceneToRender => {
+    engine.runRenderLoop(() => {
+    sceneToRender.render();
 
-engine.runRenderLoop(() => {
-    scene.render();
+    let divFps = document.getElementById("fps");
+    divFps.innerHTML = engine.getFps().toFixed() + " fps";
+    });
+
+
+
+    //console.log('test');
 });
