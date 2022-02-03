@@ -27,16 +27,6 @@ const createScene = function() {
     // sphere.position.y = 2;
     // sphere.position.z = 5;
 
-    //Download mesh from babylon to test
-    BABYLON.SceneLoader.ImportMeshAsync("him", "https://assets.babylonjs.com/meshes/Dude/", "dude.babylon", scene)
-    .then((result) => {
-        var dude = result.meshes[0];
-        dude.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
-        dude.position = new BABYLON.Vector3(-10, 0, -10);
-
-        scene.beginAnimation(result.skeletons[0], 0, 100, true, 1);
-    });
-
     //const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 500, height:500}, scene);
 
     const groundMat = new BABYLON.StandardMaterial("groundMat");
@@ -44,16 +34,60 @@ const createScene = function() {
 
     const xrPromise = scene.createDefaultXRExperienceAsync({
         uiOptions: {
-            sessionMode: 'immersive-ar'
-        }
+            sessionMode: 'immersive-ar',
+            referenceSpaceType: 'local-floor'
+        },
+        optionalFeatures: true
     });
 
     return xrPromise.then((xrExperience) => {
 
-        // box.parent = xrExperience.baseExperience.camera;
-        
-        // const xrTest = fm.enableFeature(BABYLON.WebXRHitTestLegacy.Name, 'latest', {});
-        // const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, 'latest', {});
+        const fm = xrExperience.baseExperience.featuresManager;
+
+        const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, 'latest', {});
+        //const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, 'latest', {});
+        const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest');
+        const bgRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
+
+    //Download mesh from babylon to test
+    BABYLON.SceneLoader.ImportMeshAsync("him", "https://assets.babylonjs.com/meshes/Dude/", "dude.babylon", scene)
+    .then((result) => {
+        var dude = result.meshes[0];
+        dude.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
+        //dude.position = new BABYLON.Vector3(-2, 0, -2);
+        dude.position = xrExperience.baseExperience.camera.getFrontPosition(2);
+
+        scene.beginAnimation(result.skeletons[0], 0, 100, true, 1);
+    });
+
+    let hitTest;
+
+    xrTest.onHitTestResultObservable.add((results) => {
+        if(results.length) {
+            hitTest = results[0];
+            //hitTest.transformationMatrix.decompose(undefined, dude.rotationQuaternion, dude.position);
+        } else {
+            hitTest = undefined;
+        }
+    });
+
+
+    if(anchors) {
+        console.log('anchors attached');
+
+        anchors.onAnchorAddedObservable.add(anchor => {
+            console.log('attaching', anchors);
+
+            anchor.attachedNode = dude;
+        });
+    }
+
+    scene.onPointerDown = (evt, pickInfo) => {
+        //Got hit-test, achors and is in XR.
+        if(hitTest && anchors && xrExperience.baseExperience.state === BABYLON.WebXRState.IN_XR) {
+            anchors.addAnchorPointUsingHitTetsResultAsync(hitTest);
+        }
+    }
 
         return scene;
     });
