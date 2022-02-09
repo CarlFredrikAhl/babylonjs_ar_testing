@@ -1,7 +1,7 @@
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true);
 
-const createScene = function() {
+const createScene = function () {
 
     const scene = new BABYLON.Scene(engine);
 
@@ -15,7 +15,7 @@ const createScene = function() {
     // const box = BABYLON.MeshBuilder.CreateBox('box', {}, scene);
     // box.scaling = new BABYLON.Vector3(10, 10, 10);
 
-   // box.parent = cam;
+    // box.parent = cam;
 
     // const boxMat = new BABYLON.StandardMaterial('boxMat');
     // boxMat.diffuseColor = new BABYLON.Color3.Red;
@@ -35,7 +35,7 @@ const createScene = function() {
     const xrPromise = scene.createDefaultXRExperienceAsync({
         uiOptions: {
             sessionMode: 'immersive-ar',
-            referenceSpaceType: 'local-floor'
+            referenceSpaceType:'local-floor'
         },
         optionalFeatures: true
     });
@@ -49,45 +49,49 @@ const createScene = function() {
         const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest');
         const bgRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
 
-    //Download mesh from babylon to test
-    BABYLON.SceneLoader.ImportMeshAsync("him", "https://assets.babylonjs.com/meshes/Dude/", "dude.babylon", scene)
-    .then((result) => {
-        var dude = result.meshes[0];
-        dude.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
-        //dude.position = new BABYLON.Vector3(-2, 0, -2);
-        dude.position = xrExperience.baseExperience.camera.getFrontPosition(2);
+        //Download mesh from babylon to test
+        BABYLON.SceneLoader.ImportMeshAsync("him", "https://assets.babylonjs.com/meshes/Dude/", "dude.babylon", scene)
+            .then((result) => {
+                var dude = result.meshes[0];
+                dude.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
+                //dude.position = new BABYLON.Vector3(-2, 0, -2);
+                dude.position = xrExperience.baseExperience.camera.getFrontPosition(2);
+                //dude.setEnabled(false);
+                dude.rotationQuaternion = new BABYLON.Quaternion();
 
-        scene.beginAnimation(result.skeletons[0], 0, 100, true, 1);
-    });
+                scene.beginAnimation(result.skeletons[0], 0, 100, true, 1);
+            });
 
-    let hitTest;
+        let hitTest;
 
-    xrTest.onHitTestResultObservable.add((results) => {
-        if(results.length) {
-            hitTest = results[0];
-            //hitTest.transformationMatrix.decompose(undefined, dude.rotationQuaternion, dude.position);
-        } else {
-            hitTest = undefined;
-        }
-    });
-
-
-    if(anchors) {
-        console.log('anchors attached');
-
-        anchors.onAnchorAddedObservable.add(anchor => {
-            console.log('attaching', anchors);
-
-            anchor.attachedNode = dude;
+        xrTest.onHitTestResultObservable.add((results) => {
+            if (results.length) {
+                //dude.setEnabed(true);
+                hitTest = results[0];
+                //hitTest.transformationMatrix.decompose(dude.scaling, dude.rotationQuaternion, dude.position);
+            } else {
+                //dude.setEnabed(false);
+                hitTest = undefined;
+            }
         });
-    }
 
-    scene.onPointerDown = (evt, pickInfo) => {
-        //Got hit-test, achors and is in XR.
-        if(hitTest && anchors && xrExperience.baseExperience.state === BABYLON.WebXRState.IN_XR) {
-            anchors.addAnchorPointUsingHitTetsResultAsync(hitTest);
-        }
-    }
+
+        // if(anchors) {
+        //     console.log('anchors attached');
+
+        //     anchors.onAnchorAddedObservable.add(anchor => {
+        //         console.log('attaching', anchors);
+
+        //         anchor.attachedNode = dude;
+        //     });
+        // }
+
+        // scene.onPointerDown = (evt, pickInfo) => {
+        //     //Got hit-test, achors and is in XR.
+        //     if(hitTest && anchors && xrExperience.baseExperience.state === BABYLON.WebXRState.IN_XR) {
+        //         anchors.addAnchorPointUsingHitTetsResultAsync(hitTest);
+        //     }
+        // }
 
         return scene;
     });
@@ -95,10 +99,10 @@ const createScene = function() {
 
 createScene().then(sceneToRender => {
     engine.runRenderLoop(() => {
-    sceneToRender.render();
+        sceneToRender.render();
 
-    let divFps = document.getElementById("fps");
-    divFps.innerHTML = engine.getFps().toFixed() + " fps";
+        let divFps = document.getElementById("fps");
+        divFps.innerHTML = engine.getFps().toFixed() + " fps";
     });
 
     //console.log('test');
