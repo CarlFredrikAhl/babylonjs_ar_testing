@@ -56,7 +56,7 @@ const createScene = function () {
                 var dude = result.meshes[0];
                 dude.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
                 //dude.position = new BABYLON.Vector3(-2, 0, -2);
-                dude.position = xrExperience.baseExperience.camera.getFrontPosition(2);
+                //dude.position = xrExperience.baseExperience.camera.getFrontPosition(2);
                 //dude.setEnabled(false);
                 //dude.rotation = xrExperience.baseExperience.camera.rotation;
                 //dude.setParent(xrExperience.baseExperience.camera);
