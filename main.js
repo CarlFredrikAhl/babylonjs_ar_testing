@@ -43,10 +43,11 @@ const createScene = function () {
     return xrPromise.then((xrExperience) => {
 
         const fm = xrExperience.baseExperience.featuresManager;
+        //xrExperience.baseExperience.camera.useAutoRotationBehaviour = true;
 
         const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, 'latest', {});
         //const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, 'latest', {});
-        const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest');
+        const anchors = fm.enableFeature(BABYLON.WebXRAnchorSystem.Name, 'latest', {doNotRemoveAnchorsOnSessionEnded: true});
         const bgRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
 
         //Download mesh from babylon to test
@@ -57,7 +58,8 @@ const createScene = function () {
                 //dude.position = new BABYLON.Vector3(-2, 0, -2);
                 dude.position = xrExperience.baseExperience.camera.getFrontPosition(2);
                 //dude.setEnabled(false);
-                dude.rotationQuaternion = new BABYLON.Quaternion();
+                //dude.rotation = xrExperience.baseExperience.camera.rotation;
+                //dude.setParent(xrExperience.baseExperience.camera);
 
                 scene.beginAnimation(result.skeletons[0], 0, 100, true, 1);
             });
