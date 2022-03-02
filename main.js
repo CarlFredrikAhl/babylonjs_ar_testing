@@ -19,25 +19,6 @@ const createScene = function () {
         scene
     );
 
-    //const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 500, height:500}, scene);
-
-    // const box = BABYLON.MeshBuilder.CreateBox('box', {}, scene);
-    // box.scaling = new BABYLON.Vector3(10, 10, 10);
-
-    // box.parent = cam;
-
-    // const boxMat = new BABYLON.StandardMaterial('boxMat');
-    // boxMat.diffuseColor = new BABYLON.Color3.Red;
-
-    // box.material = boxMat;
-    // box.position = new BABYLON.Vector3(0, 5, 0);
-
-    // var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
-    // sphere.position.y = 2;
-    // sphere.position.z = 5;
-
-    //const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 500, height:500}, scene);
-
     const groundMat = new BABYLON.StandardMaterial("groundMat");
     groundMat.diffuseColor = new BABYLON.Color3.Gray();
 
@@ -51,7 +32,6 @@ const createScene = function () {
 
     return xrPromise.then((xrExperience) => {
         const fm = xrExperience.baseExperience.featuresManager;
-        //xrExperience.baseExperience.camera.useAutoRotationBehaviour = true;
 
         const xrTest = fm.enableFeature(
             BABYLON.WebXRHitTest.Name,
@@ -65,25 +45,6 @@ const createScene = function () {
             { doNotRemoveAnchorsOnSessionEnded: true }
         );
         const bgRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
-
-        //Download mesh from babylon to test
-        // BABYLON.SceneLoader.ImportMeshAsync(
-        //     "him",
-        //     "https://assets.babylonjs.com/meshes/Dude/",
-        //     "dude.babylon",
-        //     scene
-        // ).then((result) => {
-        //     dude = result.meshes[0];
-        //     dude.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
-        //     //dude.position = new BABYLON.Vector3(-2, 0, -2);
-        //     // dude.position =
-        //     //     xrExperience.baseExperience.camera.getFrontPosition(2);
-        //     //dude.setEnabled(false);
-        //     //dude.rotation = xrExperience.baseExperience.camera.rotation;
-        //     //dude.setParent(xrExperience.baseExperience.camera);
-
-        //     scene.beginAnimation(result.skeletons[0], 0, 100, true, 1);
-        // });
 
         const assetsManager = new BABYLON.AssetsManager(scene);
         const meshTask = assetsManager.addMeshTask('modelTask', '', './models_small/', 'small.obj');
