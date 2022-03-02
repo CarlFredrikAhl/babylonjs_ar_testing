@@ -87,6 +87,23 @@ const createScene = function () {
         //     }
         // }
 
+        //GUI
+        const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const panel = new BABYLON.GUI.StackPanel();
+        panel.width = "220px";
+        panel.top = "-50px";
+        panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        adt.addControl(panel);
+
+        //Header
+        const qrBtn = new BABYLON.GUI.Button.CreateSimpleButton("qrBtn", "Skanna QR-Kod");
+        qrBtn.height = "200px";
+        qrBtn.width = "200px";
+        qrBtn.color = "black";
+        qrBtn.background = "white";
+        panel.addControl(qrBtn);
+
         return scene;
     });
 };
