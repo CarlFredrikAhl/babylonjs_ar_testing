@@ -1,6 +1,10 @@
 {
   "dependencies": {
+    "@zappar/zappar-babylonjs": "^0.3.32",
     "babylonjs": "^4.2.1",
     "save": "^2.4.0"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
   }
 }

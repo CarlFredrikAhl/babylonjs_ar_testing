@@ -1,8 +1,11 @@
+import * as ZapparBabylon from "@zappar/zappar-babylonjs";
+
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
 var currentHitPosition = undefined;
 var dude = undefined;
 var updateBuildingPosition = true;
+
 const createScene = function () {
     const scene = new BABYLON.Scene(engine);
 
@@ -88,7 +91,7 @@ const createScene = function () {
         // }
 
         //Image tracking using Zappar
-        
+        const zapCam = new ZapparBabylon.Camera('zapCam', scene);
 
         //GUI
         // const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
