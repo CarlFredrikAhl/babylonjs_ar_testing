@@ -1,4 +1,4 @@
-import * as ZapparBabylon from "@zappar/zappar-babylonjs";
+//import * as ZapparBabylon from "@zappar/zappar-babylonjs";
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
@@ -49,15 +49,6 @@ const createScene = function () {
         );
         const bgRemover = fm.enableFeature(BABYLON.WebXRBackgroundRemover.Name);
 
-        const assetsManager = new BABYLON.AssetsManager(scene);
-        const meshTask = assetsManager.addMeshTask('modelTask', '', './models_small/', 'small.obj');
-        meshTask.onSuccess = (task) => {
-            for(var i = 0; i < task.loadedMeshes.length; i++) {
-                task.loadedMeshes[i].scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
-            }
-        }
-        assetsManager.load();
-
         // xrTest.onHitTestResultObservable.add((results) => {
         //     if (results.length) {
         //         currentHitPosition = results[0].position;
@@ -91,25 +82,66 @@ const createScene = function () {
         // }
 
         //Image tracking using Zappar
-        const zapCam = new ZapparBabylon.Camera('zapCam', scene);
+        //const zapCam = new ZapparBabylon.Camera('zapCam', scene);
+
+        function loadBuilding(folder, fileName) {
+            
+            let prevBuilding = scene.getMeshesByID('buildingPart');
+
+            for(let i = 0; i < prevBuilding.length; i++) {
+               let building = scene.getMeshByID('buildingPart');
+               scene.removeMesh(building);
+            }
+            
+            const assetsManager = new BABYLON.AssetsManager(scene);
+            const meshTask = assetsManager.addMeshTask('modelTask', '', folder, fileName);
+            meshTask.onSuccess = (task) => {
+                for(var i = 0; i < task.loadedMeshes.length; i++) {
+                    task.loadedMeshes[i].scaling = new BABYLON.Vector3(0.03, 0.03, 0.03);
+                    task.loadedMeshes[i].id = 'buildingPart';
+                }
+            }
+        assetsManager.load();
+        } 
 
         //GUI
-        // const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        // const panel = new BABYLON.GUI.StackPanel();
-        // panel.width = "220px";
-        // panel.top = "-50px";
-        // panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        // panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        // adt.addControl(panel);
+        const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const panel = new BABYLON.GUI.StackPanel();
+        panel.width = "220px";
+        panel.top = "-50px";
+        panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        adt.addControl(panel);
 
-        // //QR-Button
-        // const qrBtn = new BABYLON.GUI.Button.CreateSimpleButton("qrBtn", "Skanna QR-Kod");
-        // qrBtn.height = "200px";
-        // qrBtn.width = "200px";
-        // qrBtn.color = "black";
-        // qrBtn.background = "white";
-        // panel.addControl(qrBtn);
+        //btns to choose building
+        const btn = new BABYLON.GUI.Button.CreateSimpleButton("btn", "Byggnad 1");
+        btn.height = "200px";
+        btn.width = "200px";
+        btn.color = "black";
+        btn.background = "white";
+        btn.onPointerUpObservable.add(function() {
+            loadBuilding('./models_small/', 'small.obj');
+        });
 
+        const btn2 = new BABYLON.GUI.Button.CreateSimpleButton("btn", "Byggnad 2");
+        btn2.height = "200px";
+        btn2.width = "200px";
+        btn2.color = "black";
+        btn2.background = "white";
+        btn2.onPointerUpObservable.add(function() {
+            loadBuilding('./models/', 'ARTestFloor.obj');
+        });
+
+        const btn3 = new BABYLON.GUI.Button.CreateSimpleButton("btn", "Byggnad 3");
+        btn3.height = "200px";
+        btn3.width = "200px";
+        btn3.color = "black";
+        btn3.background = "white";
+        
+        panel.addControl(btn);
+        panel.addControl(btn2);
+        panel.addControl(btn3);
+        
         return scene;
     });
 };
