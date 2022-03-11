@@ -144,12 +144,20 @@ const createScene = function () {
 
         //window.location = "intent://arvr.google.com/scene-viewer/1.0?file=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;";
         
-        var modelLink = document.createElement('a');
-        var linkText = document.createTextNode('Öppna byggnad');
-        modelLink.appendChild(linkText);
-        modelLink.title = "Öppna byggnad";
-        modelLink.href = "intent://arvr.google.com/scene-viewer/1.0?file=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;";
-        document.body.appendChild(modelLink);
+        var building = document.getElementById("byggnadID");
+        var createLinkBtn = document.getElementById("createLinkBtn");
+        createLinkBtn.onclick = function() {
+            var modelLink = document.createElement('a');
+            var linkText = document.createTextNode('Öppna byggnad');
+            modelLink.appendChild(linkText);
+            modelLink.title = "Öppna byggnad";
+            var intentLink = "intent://arvr.google.com/scene-viewer/1.0?file=";
+            var file = building.value;
+            var restOfLink = "#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"
+            var totalLink = intentLink + file + restOfLink;
+            modelLink.href =totalLink;
+            document.body.appendChild(modelLink);
+        }
 
         return scene;
     // });
